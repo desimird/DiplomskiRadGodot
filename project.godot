@@ -11,8 +11,24 @@ config_version=5
 [application]
 
 config/name="Nexus Game Jam"
+run/main_scene="res://world.tscn"
 config/features=PackedStringArray("4.0", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[autoload]
+
+Event="*res://Event.gd"
+Global="*res://Global.gd"
+PlayerStats="*res://Player1/PlayerStats.tscn"
+
+[display]
+
+window/size/viewport_width=240
+window/size/viewport_height=240
+window/size/window_width_override=720
+window/size/window_height_override=720
+window/vsync/vsync_mode=0
+window/stretch/scale=3.0
 
 [editor]
 

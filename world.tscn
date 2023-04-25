@@ -1,3 +1,51 @@
-[gd_scene format=3 uid="uid://deo6cipx65whl"]
+[gd_scene load_steps=8 format=3 uid="uid://deo6cipx65whl"]
+
+[ext_resource type="PackedScene" uid="uid://bhuo2n608ceo8" path="res://Player1/Player.tscn" id="1_grag5"]
+[ext_resource type="Script" path="res://world.gd" id="1_lj6sr"]
+[ext_resource type="Texture2D" uid="uid://b0ed3ky7nc232" path="res://Assets/Screenshot_2.png" id="3_ta8uu"]
+[ext_resource type="PackedScene" uid="uid://damy4t7j0lsw3" path="res://Enemies/enemy.tscn" id="4_qlnos"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j0dwu"]
+size = Vector2(356, 79)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dktvr"]
+size = Vector2(55, 282)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5oqqm"]
+size = Vector2(246, 246.5)
 
 [node name="World" type="Node2D"]
+script = ExtResource("1_lj6sr")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(179, 276.5)
+shape = SubResource("RectangleShape2D_j0dwu")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(-27, 141)
+shape = SubResource("RectangleShape2D_dktvr")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(371, 109)
+shape = SubResource("RectangleShape2D_5oqqm")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(121, -126)
+shape = SubResource("RectangleShape2D_5oqqm")
+
+[node name="Player" parent="." instance=ExtResource("1_grag5")]
+position = Vector2(52, 185)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+z_index = -1
+position = Vector2(120, 120)
+scale = Vector2(0.451673, 0.528571)
+texture = ExtResource("3_ta8uu")
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+
+[node name="Enemy" parent="." instance=ExtResource("4_qlnos")]
+position = Vector2(113, 140)
+SPEED = 25

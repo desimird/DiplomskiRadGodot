@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://2qn3njrbgvwr"]
+
+[ext_resource type="Script" path="res://World/shadow_drawer.gd" id="1_up12m"]
+[ext_resource type="Texture2D" uid="uid://bs6jiwu68tsbu" path="res://Assets/sheet.png" id="2_d7m83"]
+
+[node name="ShadowDrawer" type="Node2D"]
+script = ExtResource("1_up12m")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_d7m83")
+region_enabled = true
+region_rect = Rect2(64, 0, 16, 16)
