@@ -48,4 +48,3 @@ texture = ExtResource("3_ta8uu")
 
 [node name="Enemy" parent="." instance=ExtResource("4_qlnos")]
 position = Vector2(113, 140)
-SPEED = 25

@@ -20,4 +20,5 @@ func _on_EnemyHitbox_area_entered(area):
 	#print(area.get_parent())
 	if not area.get_parent() is Player: return
 	#print(area.get_parent())
+	print("hitted")
 	area.emit_signal("hitted")

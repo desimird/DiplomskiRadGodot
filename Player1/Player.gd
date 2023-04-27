@@ -112,7 +112,7 @@ func move_state(delta):
 func _on_did_hit():
 	combo_count += 1
 	sword_hitbox.combo_count = combo_count
-	print(combo_count)
+	#print(combo_count)
 func attack_state():
 	animation_state.travel("attack")
 	animated_sprite_2d.frame = combo_count - 1
