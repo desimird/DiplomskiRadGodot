@@ -19,3 +19,4 @@ func _ready():
 func _on_PlayerHurtbox_area_entered(area):
 	#if not area.get_parent() is WalkingEnemy: return
 	#emit_signal("hitted") 
+	pass

@@ -6,15 +6,8 @@ const MIN_DIRECTION_CHANGE_DELAY = 0.5
 const MAX_DIRECTION_CHANGE_DELAY = 1.0
 
 @export var SPEED = 25
-
-
-var direction = Vector2.RIGHT
-var direction_change_timer = 0.0
-var hitted_hard = false
 @export var MAX_SPEED: int = 10
 
-#@onready var soft_collition = $SoftCollition
-#@onready var stats = $Stats
 @onready var enemy_hurtbox = $EnemyHurtbox
 @onready var animated_sprite_2d = $AnimatedSprite2D
 @onready var animation_player = $AnimationPlayer
@@ -23,17 +16,19 @@ var hitted_hard = false
 @onready var attack_range = $AttackRange
 @onready var ray_cast_2d = $RayCast2D
 @onready var ray_cast_2d_2 = $RayCast2D2
+@onready var attack_speed = $AttackSpeed
+@onready var attack_range_2 = $AttackRange2
+@onready var player_detection = $PlayerDetection
 
-
-# Declare member variables here. Examples:
-# var a = 2
-# var b = "text"
 
 signal instance_node(node, location)
 
-var velocity_1 = Vector2.ZERO
 var knockback = Vector2.ZERO
 var paused = false
+var attacking = false
+var direction = Vector2.RIGHT
+var direction_change_timer = 0.0
+var hitted_hard = false
 
 enum{
 	WONDER,
@@ -43,6 +38,7 @@ enum{
 	ATTACK
 }
 var state = WONDER
+
 
 func _ready():
 	randomize()
@@ -55,14 +51,17 @@ func _physics_process(delta):
 	#	animated_sprite.pause()
 		return 1
 	else:
-		
 		animated_sprite_2d.flip_h = direction.x > 0
+		
 		if direction.x > 0:
 			hitbox_pivot.rotation_degrees = -180
 			attack_range.rotation_degrees = -180
+			attack_range_2.rotation_degrees = -180
 		else:
 			hitbox_pivot.rotation_degrees = 0
 			attack_range.rotation_degrees = 0
+			attack_range_2.rotation_degrees = 0
+			
 		match state:
 			WONDER:
 				wonder_state(delta)
@@ -86,7 +85,6 @@ func _physics_process(delta):
 		
 		#velocity = move_and_slide(velocity, Vector2.UP)
 
-
 func wonder_state(delta):
 	animated_sprite_2d.play("run")
 	knockback = knockback.move_toward(Vector2.ZERO,200*delta)
@@ -97,47 +95,62 @@ func wonder_state(delta):
 	if(ray_cast_2d.get_collider() or ray_cast_2d_2.get_collider()):
 		state = CHASE
 	
+	if player_in_site():
+		state = CHASE
+	
+	var direction_old = Vector2.ZERO
 	velocity = direction.normalized() * SPEED * delta
 	var collision = move_and_collide(velocity)
-	if collision:
+	if collision and not collision.get_collider() is Player:
+		direction_old = direction
 		direction = random_direction()
-		
 		direction_change_timer = randf_range(MIN_DIRECTION_CHANGE_DELAY, MAX_DIRECTION_CHANGE_DELAY)
 		if(direction == Vector2(15,15)):
+			direction = direction_old
 			state = IDLE
-			
 	if direction_change_timer > 0.0:
 		direction_change_timer -= delta
 	else:
 		direction = random_direction()
 		direction_change_timer = randf_range(MIN_DIRECTION_CHANGE_DELAY, MAX_DIRECTION_CHANGE_DELAY)
-		
 		if(direction == Vector2(15,15)):
+			direction = direction_old
 			state = IDLE
 
 		velocity = MAX_SPEED*direction
-	
+
 func idle_state(delta):
 	animated_sprite_2d.play("idle")
 	velocity = Vector2.ZERO
 	if direction_change_timer > 0.0:
 		direction_change_timer -= delta
 	else:
-		direction = random_direction()
-		state = WONDER
-
+		if not attack_range_2.get_overlapping_bodies().is_empty():
+				for i in range(attack_range_2.get_overlapping_bodies().size()):
+					if attack_range_2.get_overlapping_bodies()[i] is Player:
+						state = IDLE
+						#_on_attack_animation_ended()
+		else:
+			state = WONDER
+	
 func hitted_state(delta):
+	attacking = false
+	attack_range.monitoring = false
+	attack_speed.start()
+	enemy_hitbox.monitoring = false
 	knockback = knockback.move_toward(Vector2.ZERO,200*delta)
 	set_velocity(knockback)
 	move_and_slide()
 	knockback= velocity
+	
+	#_on_attack_animation_ended()
+	
 	
 	if hitted_hard:
 		animation_player.play("hitted_hard")
 	else:
 		animation_player.play("hitted")
 	
-
 func chase_state(delta):
 	animated_sprite_2d.play("run")
 	knockback = knockback.move_toward(Vector2.ZERO,200*delta)
@@ -145,8 +158,8 @@ func chase_state(delta):
 	move_and_slide()
 	knockback= velocity
 	
-	
 	direction = (Global.player_pos - global_position).normalized()
+	print(direction)
 	velocity = MAX_SPEED*direction
 	set_velocity(velocity)
 	move_and_slide()
@@ -155,41 +168,54 @@ func chase_state(delta):
 		state = WONDER
 
 func attack_state(delta):
-	animated_sprite_2d.play("attack")
+	enemy_hitbox.monitoring = true
+	
+	if not attacking:
+		if randi() % 2 == 0:
+			animation_player.play("attack_1")
+		else:
+			animation_player.play("attack_2")
+	
+	attacking = true
+	
+	
 
 func _on_hitted():
-	knockback = enemy_hurtbox.knock * 100
-	state = HITTED
-	
+	if not attacking:
+		knockback = enemy_hurtbox.knock * 100
+		state = HITTED
+
 func _on_hitted_hard():
-	knockback = enemy_hurtbox.knock * 100
-	
-	hitted_hard = true
-	state = HITTED
+	if not attacking:
+		knockback = enemy_hurtbox.knock * 100
+		
+		hitted_hard = true
+		state = HITTED
 	#stats.set_health(stats.health - 1)
 
 func _on_hitted_animation_ended():
-	state = WONDER
+	state = IDLE
 	if hitted_hard: hitted_hard = false
 	
 func _on_attack_animation_ended():
-	state = WONDER
-
+	attacking = false
+	attack_range.monitoring = false
+	attack_speed.start()
+	enemy_hitbox.monitoring = false
+	state = IDLE
+	
 func _on_no_health():
 	#SoundPlayer.play_sound(SoundPlayer.ENEMY_DEATH)
 	#Global.enemies_died += 1
 	#Global.enemies_died_high += 1
-#	emit_signal("instance_node", tin_can, global_position)
+	#emit_signal("instance_node", tin_can, global_position)
 	queue_free()
-	
-	
 
 func _process(delta):
 	if Global.world != null:
 		if !is_connected("instance_node", Callable(Global.world, "instance_node")):
 			connect("instance_node", Callable(Global.world, "instance_node"))
-
-
+	
 func random_direction():
 	var directions = [Vector2.RIGHT, Vector2.LEFT, Vector2.UP, Vector2.DOWN,Vector2(1,1),Vector2(-1,1),Vector2(1,-1),Vector2(-1,-1), Vector2(15,15)]
 	return directions[randi() % directions.size()]
@@ -198,5 +224,17 @@ func _on_attack_range_body_entered(body):
 	#print(body)
 	if not body is Player: return
 	if state != HITTED:
+		print(body)
 		state = ATTACK
+
+func _on_attack_speed_timeout():
+	attack_range.monitoring = true
+
+func player_in_site():
+	if not player_detection.get_overlapping_bodies().is_empty():
+				for i in range(player_detection.get_overlapping_bodies().size()):
+					if player_detection.get_overlapping_bodies()[i] is Player:
+						print("uso")
+						return true
+	return false
 
