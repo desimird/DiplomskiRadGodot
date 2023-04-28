@@ -159,7 +159,7 @@ func chase_state(delta):
 	knockback= velocity
 	
 	direction = (Global.player_pos - global_position).normalized()
-	print(direction)
+	#print(direction)
 	velocity = MAX_SPEED*direction
 	set_velocity(velocity)
 	move_and_slide()
@@ -224,7 +224,7 @@ func _on_attack_range_body_entered(body):
 	#print(body)
 	if not body is Player: return
 	if state != HITTED:
-		print(body)
+		#print(body)
 		state = ATTACK
 
 func _on_attack_speed_timeout():
@@ -234,7 +234,7 @@ func player_in_site():
 	if not player_detection.get_overlapping_bodies().is_empty():
 				for i in range(player_detection.get_overlapping_bodies().size()):
 					if player_detection.get_overlapping_bodies()[i] is Player:
-						print("uso")
+						#print("uso")
 						return true
 	return false
 

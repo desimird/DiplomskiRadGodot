@@ -95,7 +95,7 @@ func move_state(delta):
 	
 	if Input.is_action_just_pressed("ui_accept"):
 		timer.start()
-		if combo_count > 3:
+		if combo_count >= 3:
 			combo_count = 0
 			sword_hitbox.combo_count = combo_count
 		#print(combo_count)
@@ -110,10 +110,12 @@ func move_state(delta):
 		
 
 func _on_did_hit():
+	#print("on_did_hit")
 	combo_count += 1
 	sword_hitbox.combo_count = combo_count
 	#print(combo_count)
 func attack_state():
+	#print("attack_state")
 	animation_state.travel("attack")
 	animated_sprite_2d.frame = combo_count - 1
 	
@@ -149,5 +151,6 @@ func _on_no_health():
 
 
 func _on_timer_timeout():
+	#print("reset")
 	combo_count = 0
 	sword_hitbox.combo_count = combo_count
