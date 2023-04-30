@@ -2,11 +2,11 @@ extends CharacterBody2D
 class_name WalkingEnemy
 
 
-const MIN_DIRECTION_CHANGE_DELAY = 0.5
-const MAX_DIRECTION_CHANGE_DELAY = 1.0
+const MIN_DIRECTION_CHANGE_DELAY = 1.0
+const MAX_DIRECTION_CHANGE_DELAY = 2.0
 
 @export var SPEED = 25
-@export var MAX_SPEED: int = 10
+@export var MAX_SPEED: int = 30
 
 @onready var enemy_hurtbox = $EnemyHurtbox
 @onready var animated_sprite_2d = $AnimatedSprite2D
@@ -14,11 +14,9 @@ const MAX_DIRECTION_CHANGE_DELAY = 1.0
 @onready var hitbox_pivot = $HitboxPivot
 @onready var enemy_hitbox = $HitboxPivot/EnemyHitbox
 @onready var attack_range = $AttackRange
-@onready var ray_cast_2d = $RayCast2D
-@onready var ray_cast_2d_2 = $RayCast2D2
 @onready var attack_speed = $AttackSpeed
 @onready var attack_range_2 = $AttackRange2
-@onready var player_detection = $PlayerDetection
+@onready var idle_timer = $IdleTimer
 
 
 signal instance_node(node, location)
@@ -29,15 +27,15 @@ var attacking = false
 var direction = Vector2.RIGHT
 var direction_change_timer = 0.0
 var hitted_hard = false
+var chase_state_just_entered = true
 
 enum{
-	WONDER,
 	IDLE,
 	HITTED,
 	CHASE,
 	ATTACK
 }
-var state = WONDER
+var state = CHASE
 
 
 func _ready():
@@ -63,8 +61,6 @@ func _physics_process(delta):
 			attack_range_2.rotation_degrees = 0
 			
 		match state:
-			WONDER:
-				wonder_state(delta)
 			IDLE:
 				idle_state(delta)
 			HITTED:
@@ -85,43 +81,12 @@ func _physics_process(delta):
 		
 		#velocity = move_and_slide(velocity, Vector2.UP)
 
-func wonder_state(delta):
-	animated_sprite_2d.play("run")
-	knockback = knockback.move_toward(Vector2.ZERO,200*delta)
-	set_velocity(knockback)
-	move_and_slide()
-	knockback= velocity
-	
-	if(ray_cast_2d.get_collider() or ray_cast_2d_2.get_collider()):
-		state = CHASE
-	
-	if player_in_site():
-		state = CHASE
-	
-	var direction_old = Vector2.ZERO
-	velocity = direction.normalized() * SPEED * delta
-	var collision = move_and_collide(velocity)
-	if collision and not collision.get_collider() is Player:
-		direction_old = direction
-		direction = random_direction()
-		direction_change_timer = randf_range(MIN_DIRECTION_CHANGE_DELAY, MAX_DIRECTION_CHANGE_DELAY)
-		if(direction == Vector2(15,15)):
-			direction = direction_old
-			state = IDLE
-	if direction_change_timer > 0.0:
-		direction_change_timer -= delta
-	else:
-		direction = random_direction()
-		direction_change_timer = randf_range(MIN_DIRECTION_CHANGE_DELAY, MAX_DIRECTION_CHANGE_DELAY)
-		if(direction == Vector2(15,15)):
-			direction = direction_old
-			state = IDLE
-
-		velocity = MAX_SPEED*direction
 
 func idle_state(delta):
 	animated_sprite_2d.play("idle")
 	velocity = Vector2.ZERO
+	set_velocity(velocity)
+	move_and_slide()
 	if direction_change_timer > 0.0:
 		direction_change_timer -= delta
 	else:
@@ -129,9 +94,8 @@ func idle_state(delta):
 				for i in range(attack_range_2.get_overlapping_bodies().size()):
 					if attack_range_2.get_overlapping_bodies()[i] is Player:
 						state = IDLE
-						#_on_attack_animation_ended()
 		else:
-			state = WONDER
+			state = CHASE
 	
 func hitted_state(delta):
 	attacking = false
@@ -143,29 +107,26 @@ func hitted_state(delta):
 	move_and_slide()
 	knockback= velocity
 	
-	#_on_attack_animation_ended()
-	
-	
 	if hitted_hard:
 		animation_player.play("hitted_hard")
 	else:
 		animation_player.play("hitted")
 	
 func chase_state(delta):
-	animated_sprite_2d.play("run")
+	if chase_state_just_entered:
+		idle_timer.start()
+		chase_state_just_entered = false
+	animation_player.play("run")
 	knockback = knockback.move_toward(Vector2.ZERO,200*delta)
 	set_velocity(knockback)
 	move_and_slide()
 	knockback= velocity
 	
 	direction = (Global.player_pos - global_position).normalized()
-	#print(direction)
+	direction.y = sign(direction.y)* (abs(direction.y) + 1)
 	velocity = MAX_SPEED*direction
 	set_velocity(velocity)
 	move_and_slide()
-	
-	if not(ray_cast_2d.get_collider() or ray_cast_2d_2.get_collider()):
-		state = WONDER
 
 func attack_state(delta):
 	enemy_hitbox.monitoring = true
@@ -230,11 +191,8 @@ func _on_attack_range_body_entered(body):
 func _on_attack_speed_timeout():
 	attack_range.monitoring = true
 
-func player_in_site():
-	if not player_detection.get_overlapping_bodies().is_empty():
-				for i in range(player_detection.get_overlapping_bodies().size()):
-					if player_detection.get_overlapping_bodies()[i] is Player:
-						#print("uso")
-						return true
-	return false
 
+func _on_idle_timer_timeout():
+	state = IDLE
+	direction_change_timer = randf_range(MIN_DIRECTION_CHANGE_DELAY, MAX_DIRECTION_CHANGE_DELAY)
+	chase_state_just_entered = true

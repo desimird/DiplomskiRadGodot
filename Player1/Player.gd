@@ -17,6 +17,11 @@ var paused = false
 var combo_count = 0
 
 
+var attacking = false
+
+var can_attack = true
+var attack_animation_finished = false
+var attack_pressed = false
 @onready var animation_player = $AnimationPlayer
 @onready var animation_tree = $AnimationTree
 @onready var animation_state = animation_tree.get("parameters/playback")
@@ -25,6 +30,7 @@ var combo_count = 0
 @onready var sword_hitbox = $HitboxPivot/SwordHitbox
 @onready var timer = $Timer
 @onready var animated_sprite_2d = $AnimatedSprite2D
+@onready var attack_input_timer = $AttackInputTimer
 
 
 #@onready var projectile = preload("res://World/projectile.tscn")
@@ -34,7 +40,8 @@ signal popup_gms(node,location)
 enum{
 	MOVE,
 	ROLL,
-	ATTACK
+	ATTACK,
+	IDLE
 }
 var state = MOVE
 
@@ -47,11 +54,14 @@ func _ready():
 	#player_stats.connect("no_health", self, "change_screen")
 
 func _physics_process(delta):
+	#print(combo_count)
 #	update()
 	if Global.paused:
 		return 1
 	else:
-	#print(player_stats.health)
+		
+		
+				
 		if Global.world != null:
 			if !is_connected("popup_gms", Callable(Global.world, "popup_gms")):
 				connect("popup_gms", Callable(Global.world, "popup_gms"))
@@ -60,12 +70,31 @@ func _physics_process(delta):
 			MOVE:
 				move_state(delta)
 			ATTACK:
-				attack_state()
+				attack_state(delta)
 
 
 
 
 func move_state(delta):
+	
+	if Input.is_action_just_pressed("ui_accept"):# and can_attack:
+		if (animation_tree.get("parameters/attack/blend_position").y == 0):
+			timer.stop()
+			attack_input_timer.stop()
+			timer.start()
+			attack_input_timer.start()
+			can_attack = false
+#				animation_state.travel("attack")
+#				animated_sprite_2d.frame = combo_count
+#				if animation_tree.get("parameters/attack/blend_position").x < 0:
+#					animation_player.play("attack_left")
+#					animated_sprite_2d.frame = combo_count - 1
+#				else:
+#					animation_player.play("attack_right")
+#					animated_sprite_2d.frame = combo_count - 1
+			attack_animation_finished = false
+			
+			state = ATTACK
 	
 	input_vector.x= Input.get_action_strength("ui_right")- Input.get_action_strength("ui_left")
 	input_vector.y= Input.get_action_strength("ui_down")- Input.get_action_strength("ui_up")
@@ -93,14 +122,7 @@ func move_state(delta):
 	move_and_slide()
 	velocity = velocity
 	
-	if Input.is_action_just_pressed("ui_accept"):
-		timer.start()
-		if combo_count >= 3:
-			combo_count = 0
-			sword_hitbox.combo_count = combo_count
-		#print(combo_count)
-		if (animation_tree.get("parameters/attack/blend_position").y == 0):
-			state = ATTACK
+	
 		#var pos = global_position
 		#Event.emit_signal("shots_fired", projectile, pos,animation_tree.get("parameters/attack/blend_position"))
 #		if Global.sword_duration > 0:
@@ -110,17 +132,26 @@ func move_state(delta):
 		
 
 func _on_did_hit():
+	
 	#print("on_did_hit")
 	combo_count += 1
 	sword_hitbox.combo_count = combo_count
+	if combo_count > 3:
+		combo_count = 0
+		sword_hitbox.combo_count = combo_count
 	#print(combo_count)
-func attack_state():
-	#print("attack_state")
+func attack_state(delta):
+
+		
 	animation_state.travel("attack")
-	animated_sprite_2d.frame = combo_count - 1
-	
+	animated_sprite_2d.set("frame",combo_count-1)
+		
+		
+
 func attack_anim_finished():
+	#pass
 	state = MOVE
+	
 
 func _on_hitted():
 	#print("USO")
@@ -151,6 +182,10 @@ func _on_no_health():
 
 
 func _on_timer_timeout():
-	#print("reset")
 	combo_count = 0
 	sword_hitbox.combo_count = combo_count
+	#state = MOVE
+
+
+func _on_attack_input_timer_timeout():
+	can_attack = true

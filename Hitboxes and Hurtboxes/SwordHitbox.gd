@@ -19,6 +19,7 @@ func _ready():
 
 func _on_SwordHitbox_area_entered(area):
 	if area.get_parent() is WalkingEnemy:
+		#print("uso")
 		emit_signal("did_hit")
 	#if area.get_parent() is WalkingEnemy:
 	#	SoundPlayer.play_sound(SoundPlayer.HIT_ENEMY)
