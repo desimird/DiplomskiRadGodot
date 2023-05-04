@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://damy4t7j0lsw3"]
+[gd_scene load_steps=43 format=3 uid="uid://damy4t7j0lsw3"]
 
 [ext_resource type="Script" path="res://Enemies/enemy.gd" id="1_olvjn"]
 [ext_resource type="PackedScene" path="res://Hitboxes and Hurtboxes/EnemyHurtbox.tscn" id="1_x4t4e"]
@@ -13,6 +13,8 @@
 [ext_resource type="Texture2D" uid="uid://b0pdugbshhatb" path="res://Assets/Enemy1/image 2521.png" id="8_lgi71"]
 [ext_resource type="Texture2D" uid="uid://bf0ay7160dohr" path="res://Assets/Enemy1/image 2531.png" id="9_8sjeh"]
 [ext_resource type="PackedScene" uid="uid://b16q0ta2dmbxh" path="res://Hitboxes and Hurtboxes/EnemyHitbox.tscn" id="13_kuc3a"]
+[ext_resource type="PackedScene" uid="uid://nwgfjgdp5dav" path="res://Enemies/Stats.tscn" id="14_6233y"]
+[ext_resource type="PackedScene" uid="uid://bdfmn5q4piar4" path="res://Hitboxes and Hurtboxes/SoftCollision.tscn" id="15_d2v8w"]
 
 [sub_resource type="Animation" id="Animation_cpcvw"]
 length = 0.001
@@ -374,17 +376,21 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_8sbdr"]
-size = Vector2(17, 27)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_wsstf"]
+height = 38.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1ovn7"]
-size = Vector2(20, 36)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_hoppx"]
+height = 38.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cm8y5"]
-size = Vector2(7.25, 25)
+size = Vector2(7.25, 17.75)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_a7564"]
 radius = 5.09902
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_jpqyk"]
+radius = 11.0
+height = 40.0
 
 [node name="Enemy" type="CharacterBody2D"]
 texture_filter = 1
@@ -402,14 +408,12 @@ sprite_frames = SubResource("SpriteFrames_x6mw2")
 animation = &"hitted"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-1.5, 5.5)
-shape = SubResource("RectangleShape2D_8sbdr")
+shape = SubResource("CapsuleShape2D_wsstf")
 
 [node name="EnemyHurtbox" parent="." instance=ExtResource("1_x4t4e")]
 
 [node name="CollisionShape2D" parent="EnemyHurtbox" index="0"]
-position = Vector2(-2, 2)
-shape = SubResource("RectangleShape2D_1ovn7")
+shape = SubResource("CapsuleShape2D_hoppx")
 debug_color = Color(0.862745, 0.32549, 0.396078, 0.419608)
 
 [node name="AttackRange" type="Area2D" parent="."]
@@ -417,7 +421,7 @@ collision_layer = 64
 collision_mask = 33792
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange"]
-position = Vector2(-17, 0)
+position = Vector2(-15, -7)
 shape = SubResource("RectangleShape2D_cm8y5")
 debug_color = Color(0.231373, 0.635294, 0.121569, 0.419608)
 
@@ -426,7 +430,7 @@ collision_layer = 64
 collision_mask = 32768
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AttackRange2"]
-position = Vector2(-17, 0)
+position = Vector2(-15, -7)
 shape = SubResource("RectangleShape2D_cm8y5")
 debug_color = Color(0.568627, 0.556863, 0.0156863, 0.419608)
 
@@ -448,9 +452,17 @@ wait_time = 0.5
 wait_time = 6.0
 one_shot = true
 
+[node name="Stats" parent="." instance=ExtResource("14_6233y")]
+
+[node name="SoftCollision" parent="." instance=ExtResource("15_d2v8w")]
+
+[node name="CollisionShape2D" parent="SoftCollision" index="0"]
+shape = SubResource("CapsuleShape2D_jpqyk")
+
 [connection signal="body_entered" from="AttackRange" to="." method="_on_attack_range_body_entered"]
 [connection signal="timeout" from="AttackSpeed" to="." method="_on_attack_speed_timeout"]
 [connection signal="timeout" from="IdleTimer" to="." method="_on_idle_timer_timeout"]
 
 [editable path="EnemyHurtbox"]
 [editable path="HitboxPivot/EnemyHitbox"]
+[editable path="SoftCollision"]

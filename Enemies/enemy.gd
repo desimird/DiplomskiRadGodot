@@ -7,6 +7,7 @@ const MAX_DIRECTION_CHANGE_DELAY = 2.0
 
 @export var SPEED = 25
 @export var MAX_SPEED: int = 30
+@export var glasses: PackedScene
 
 @onready var enemy_hurtbox = $EnemyHurtbox
 @onready var animated_sprite_2d = $AnimatedSprite2D
@@ -17,6 +18,9 @@ const MAX_DIRECTION_CHANGE_DELAY = 2.0
 @onready var attack_speed = $AttackSpeed
 @onready var attack_range_2 = $AttackRange2
 @onready var idle_timer = $IdleTimer
+@onready var stats = $Stats
+@onready var soft_collision = $SoftCollision
+
 
 
 signal instance_node(node, location)
@@ -42,11 +46,11 @@ func _ready():
 	randomize()
 	enemy_hurtbox.connect("hitted", Callable(self, "_on_hitted"))
 	enemy_hurtbox.connect("hitted_hard", Callable(self, "_on_hitted_hard"))
-	#stats.connect("no_health", Callable(self, "_on_no_health"))
+	stats.connect("no_health", Callable(self, "_on_no_health"))
+	
 
 func _physics_process(delta):
 	if Global.paused or paused:
-	#	animated_sprite.pause()
 		return 1
 	else:
 		animated_sprite_2d.flip_h = direction.x > 0
@@ -69,7 +73,11 @@ func _physics_process(delta):
 				chase_state(delta)
 			ATTACK:
 				attack_state(delta)
-
+		
+		if soft_collision.is_colliding():
+			velocity = soft_collision.get_push_vector() * delta 
+			set_velocity(velocity)
+			move_and_slide()
 	#	animated_sprite.play()
 	#print(stats.health)
 		
@@ -113,6 +121,7 @@ func hitted_state(delta):
 		animation_player.play("hitted")
 	
 func chase_state(delta):
+	
 	if chase_state_just_entered:
 		idle_timer.start()
 		chase_state_just_entered = false
@@ -152,11 +161,12 @@ func _on_hitted_hard():
 		
 		hitted_hard = true
 		state = HITTED
-	#stats.set_health(stats.health - 1)
+	stats.set_health(stats.health - 1)
 
 func _on_hitted_animation_ended():
 	state = IDLE
 	if hitted_hard: hitted_hard = false
+	stats.set_health(stats.health - 1)
 	
 func _on_attack_animation_ended():
 	attacking = false
@@ -169,7 +179,7 @@ func _on_no_health():
 	#SoundPlayer.play_sound(SoundPlayer.ENEMY_DEATH)
 	#Global.enemies_died += 1
 	#Global.enemies_died_high += 1
-	#emit_signal("instance_node", tin_can, global_position)
+	#emit_signal("instance_node", glasses, global_position)
 	queue_free()
 
 func _process(delta):

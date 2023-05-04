@@ -1,0 +1,75 @@
+[gd_scene load_steps=8 format=3 uid="uid://cjmap5hq0qyv2"]
+
+[ext_resource type="Script" path="res://test/control.gd" id="1_feey0"]
+[ext_resource type="PackedScene" uid="uid://cx14245cudh85" path="res://test/hp_bar.tscn" id="2_bxwbx"]
+[ext_resource type="Texture2D" uid="uid://cer4hr6ojwqi1" path="res://Assets/glasses_icon.png" id="3_iucd6"]
+[ext_resource type="Texture2D" uid="uid://bqergtj0ddhic" path="res://Assets/head_big.png" id="4_ea0hy"]
+[ext_resource type="FontFile" uid="uid://70o32d2posp" path="res://Assets/fonts/slkscreb.ttf" id="5_ugesd"]
+
+[sub_resource type="Theme" id="Theme_u1o5u"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_1k4yb"]
+viewport_path = NodePath("bar")
+
+[node name="ingameui" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_feey0")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -30.0
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0, 0, 0, 1)
+
+[node name="hp" type="TextureProgressBar" parent="."]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -16.0
+offset_right = -148.0
+offset_bottom = -8.0
+grow_horizontal = 2
+grow_vertical = 0
+theme = SubResource("Theme_u1o5u")
+max_value = 75.0
+step = 2.5
+nine_patch_stretch = true
+texture_progress = SubResource("ViewportTexture_1k4yb")
+
+[node name="bar" parent="." instance=ExtResource("2_bxwbx")]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(176, 227)
+texture = ExtResource("3_iucd6")
+flip_h = true
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+texture_filter = 1
+position = Vector2(16, 224)
+texture = ExtResource("4_ea0hy")
+
+[node name="num_of_glasses" type="Label" parent="."]
+texture_filter = 1
+layout_mode = 0
+offset_left = 191.0
+offset_top = 220.0
+offset_right = 233.0
+offset_bottom = 246.0
+theme_override_fonts/font = ExtResource("5_ugesd")
+theme_override_font_sizes/font_size = 10
+text = "X 123"

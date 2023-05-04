@@ -3,7 +3,6 @@
 [ext_resource type="Script" path="res://Player1/Player.gd" id="2"]
 [ext_resource type="Texture2D" uid="uid://be48aqw2d4wx6" path="res://Assets/player_attack_f.png" id="2_0ki37"]
 [ext_resource type="PackedScene" uid="uid://cgr7cgkrlfuq5" path="res://Hitboxes and Hurtboxes/SwordHitbox.tscn" id="3"]
-[ext_resource type="PackedScene" uid="uid://bvgcd1kuixuwi" path="res://Player1/PlayerStats.tscn" id="4"]
 [ext_resource type="Texture2D" uid="uid://dfophlnxapig" path="res://Assets/player_run_f.png" id="4_6q3r7"]
 [ext_resource type="PackedScene" path="res://Hitboxes and Hurtboxes/PlayerHurtbox.tscn" id="5"]
 [ext_resource type="Texture2D" uid="uid://bs6jiwu68tsbu" path="res://Assets/sheet.png" id="11_xgpsy"]
@@ -85,13 +84,17 @@ blend_mode = 1
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="39"]
 
-[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_d16wo"]
-
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wx2hh"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_w0l2h"]
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jdutm"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ssphs"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_n3y38"]
+switch_mode = 2
+advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachine" id="28"]
 states/End/position = Vector2(533, 157)
@@ -102,7 +105,7 @@ states/Run/position = Vector2(402, 37)
 states/Start/position = Vector2(-78, 123)
 states/attack/node = SubResource("25")
 states/attack/position = Vector2(207, 206)
-transitions = ["Idle", "Run", SubResource("26"), "Idle", "attack", SubResource("39"), "attack", "Idle", SubResource("AnimationNodeStateMachineTransition_d16wo"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_wx2hh"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_w0l2h"), "Idle", "End", SubResource("AnimationNodeStateMachineTransition_jdutm")]
+transitions = ["Idle", "Run", SubResource("26"), "Idle", "attack", SubResource("39"), "Run", "Idle", SubResource("AnimationNodeStateMachineTransition_wx2hh"), "Start", "Idle", SubResource("AnimationNodeStateMachineTransition_w0l2h"), "Idle", "End", SubResource("AnimationNodeStateMachineTransition_jdutm"), "attack", "Idle", SubResource("AnimationNodeStateMachineTransition_ssphs"), "attack", "End", SubResource("AnimationNodeStateMachineTransition_n3y38")]
 graph_offset = Vector2(-149.746, 30)
 
 [sub_resource type="AnimationNodeStateMachinePlayback" id="29"]
@@ -748,15 +751,15 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="3"]
-size = Vector2(24, 34)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qnimp"]
+height = 40.0
 
 [sub_resource type="CapsuleShape2D" id="4"]
 radius = 5.0
 height = 10.0
 
-[sub_resource type="RectangleShape2D" id="83"]
-size = Vector2(20, 30)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_lt4jp"]
+radius = 8.0
 
 [node name="Player" type="CharacterBody2D"]
 z_index = 12
@@ -772,7 +775,7 @@ active = true
 parameters/playback = SubResource("29")
 parameters/Idle/blend_position = Vector2(0.00160003, 1.1)
 parameters/Run/blend_position = Vector2(0, 0)
-parameters/attack/blend_position = Vector2(-0.420655, 0.0480349)
+parameters/attack/blend_position = Vector2(0.261125, -0.0202247)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 speed_scale = 0.5
@@ -784,13 +787,12 @@ libraries = {
 texture_filter = 1
 position = Vector2(0, -3)
 sprite_frames = SubResource("2")
-animation = &"attack_right"
+animation = &"run_left"
 speed_scale = 0.5
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 4)
-shape = SubResource("3")
+shape = SubResource("CapsuleShape2D_qnimp")
 
 [node name="HitboxPivot" type="Marker2D" parent="."]
 position = Vector2(0, -10)
@@ -802,19 +804,17 @@ position = Vector2(16, 0)
 shape = SubResource("4")
 disabled = true
 
-[node name="PlayerStats" parent="." instance=ExtResource("4")]
-
 [node name="PlayerHurtbox" parent="." instance=ExtResource("5")]
 
 [node name="CollisionShape2D" parent="PlayerHurtbox" index="0"]
-position = Vector2(1, 4)
-shape = SubResource("83")
+position = Vector2(0, 3)
+shape = SubResource("CapsuleShape2D_lt4jp")
 debug_color = Color(0.211765, 0.639216, 0, 0.419608)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 z_index = -2
 texture_filter = 1
-position = Vector2(0, 5)
+position = Vector2(0, 19)
 texture = ExtResource("11_xgpsy")
 region_enabled = true
 region_rect = Rect2(64, 0, 16, 16)
@@ -823,12 +823,7 @@ region_rect = Rect2(64, 0, 16, 16)
 wait_time = 0.6
 one_shot = true
 
-[node name="AttackInputTimer" type="Timer" parent="."]
-wait_time = 0.3
-one_shot = true
-
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
-[connection signal="timeout" from="AttackInputTimer" to="." method="_on_attack_input_timer_timeout"]
 
 [editable path="HitboxPivot/SwordHitbox"]
 [editable path="PlayerHurtbox"]

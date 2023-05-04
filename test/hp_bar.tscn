@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://cx14245cudh85"]
+
+[ext_resource type="Texture2D" uid="uid://dlu62y1jt0ysj" path="res://Assets/hp_bar_one.png" id="1_xwnv5"]
+
+[node name="SubViewport" type="SubViewport"]
+transparent_bg = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(75, 8)
+size_2d_override = Vector2i(10, 10)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+texture_filter = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 235.0
+offset_bottom = 4.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_xwnv5")
+stretch_mode = 1
