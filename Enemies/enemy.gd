@@ -75,9 +75,11 @@ func _physics_process(delta):
 				attack_state(delta)
 		
 		if soft_collision.is_colliding():
-			velocity = soft_collision.get_push_vector() * delta 
+			print("AA")
+			velocity = soft_collision.get_push_vector() * delta * 50
 			set_velocity(velocity)
-			move_and_slide()
+			move_and_collide(velocity)
+			#fix this 
 	#	animated_sprite.play()
 	#print(stats.health)
 		

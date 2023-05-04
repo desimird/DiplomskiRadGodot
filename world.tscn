@@ -178,3 +178,4 @@ position = Vector2(1200, -1)
 [editable path="Enemies/Enemy2"]
 [editable path="Enemies/Enemy2/EnemyHurtbox"]
 [editable path="Enemies/Enemy2/HitboxPivot/EnemyHitbox"]
+[editable path="Enemies/Enemy2/SoftCollision"]
