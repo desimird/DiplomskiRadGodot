@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 Event="*res://Event.gd"
 Global="*res://Global.gd"
 PlayerStats="*res://Player1/PlayerStats.tscn"
+SoundPlayer="*res://Sounds/SoundPlayer.tscn"
 
 [display]
 

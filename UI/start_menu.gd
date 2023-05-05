@@ -14,3 +14,6 @@ func _process(delta):
 
 func _on_animation_player_animation_finished(anim_name):
 	can_input = true
+
+func play_sound():
+	SoundPlayer.play_sound(SoundPlayer.START)

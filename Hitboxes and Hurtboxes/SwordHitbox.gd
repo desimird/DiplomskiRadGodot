@@ -19,8 +19,15 @@ func _ready():
 
 func _on_SwordHitbox_area_entered(area):
 	if area.get_parent() is WalkingEnemy:
-		#print("uso")
 		emit_signal("did_hit")
+		if combo_count == 3:
+			area.knock = knockback_vector * 1.3
+			area.emit_signal("hitted_hard")
+		else:
+			area.knock = knockback_vector * 0 
+			area.emit_signal("hitted") 
+	#area.get_parent().queue_free()
+	#print("hitted")
 	#if area.get_parent() is WalkingEnemy:
 	#	SoundPlayer.play_sound(SoundPlayer.HIT_ENEMY)
-		area.emit_signal("hitted")
+		#area.emit_signal("hitted")

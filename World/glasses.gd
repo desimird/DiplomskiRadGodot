@@ -24,6 +24,11 @@ func _process(delta):
 
 func _on_body_entered(body):
 	#print(body)
+	
 	if not body is Player: return
+	SoundPlayer.play_sound(SoundPlayer.PICKUP)
 	Global.glasses_collected += 1
 	queue_free()
+
+
+

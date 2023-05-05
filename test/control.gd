@@ -14,6 +14,6 @@ func _ready():
 func _process(delta):
 	#print(PlayerStats.health * 2.5)
 	num_of_glasses.text = "X " + str(Global.glasses_collected)
-	hp.value = (PlayerStats.health * 2.5)
+	hp.value = (PlayerStats.health)
 
 

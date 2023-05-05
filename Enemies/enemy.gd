@@ -32,6 +32,7 @@ var direction = Vector2.RIGHT
 var direction_change_timer = 0.0
 var hitted_hard = false
 var chase_state_just_entered = true
+var death_animation_playing = false
 
 enum{
 	IDLE,
@@ -53,7 +54,7 @@ func _physics_process(delta):
 	if Global.paused or paused:
 		return 1
 	else:
-		animated_sprite_2d.flip_h = direction.x > 0
+		animated_sprite_2d.flip_h = direction.x < 0
 		
 		if direction.x > 0:
 			hitbox_pivot.rotation_degrees = -180
@@ -75,10 +76,11 @@ func _physics_process(delta):
 				attack_state(delta)
 		
 		if soft_collision.is_colliding():
-			print("AA")
-			velocity = soft_collision.get_push_vector() * delta * 50
+			#print("AA")
+			#state = SOFT
+			velocity = soft_collision.get_push_vector() * MAX_SPEED
 			set_velocity(velocity)
-			move_and_collide(velocity)
+			move_and_slide()
 			#fix this 
 	#	animated_sprite.play()
 	#print(stats.health)
@@ -90,7 +92,6 @@ func _physics_process(delta):
 		#a#nimated_sprite.flip_h = direction.x < 0
 		
 		#velocity = move_and_slide(velocity, Vector2.UP)
-
 
 func idle_state(delta):
 	animated_sprite_2d.play("idle")
@@ -134,7 +135,7 @@ func chase_state(delta):
 	knockback= velocity
 	
 	direction = (Global.player_pos - global_position).normalized()
-	direction.y = sign(direction.y)* (abs(direction.y) + 1)
+	#direction.y = sign(direction.y)* (abs(direction.y) + 1)
 	velocity = MAX_SPEED*direction
 	set_velocity(velocity)
 	move_and_slide()
@@ -178,12 +179,18 @@ func _on_attack_animation_ended():
 	state = IDLE
 	
 func _on_no_health():
-	#SoundPlayer.play_sound(SoundPlayer.ENEMY_DEATH)
+	SoundPlayer.play_sound(SoundPlayer.ENEMY_DEAD)
 	#Global.enemies_died += 1
 	#Global.enemies_died_high += 1
-	#emit_signal("instance_node", glasses, global_position)
+	#if not death_animation_playing:
+	#animation_player.play("death_anim")
+	#death_animation_playing = true
+	if global_position.y < 135:
+		emit_signal("instance_node", glasses, Vector2(global_position.x,135))
+	else:
+		emit_signal("instance_node", glasses, global_position)
 	queue_free()
-
+	
 func _process(delta):
 	if Global.world != null:
 		if !is_connected("instance_node", Callable(Global.world, "instance_node")):
@@ -194,11 +201,12 @@ func random_direction():
 	return directions[randi() % directions.size()]
 
 func _on_attack_range_body_entered(body):
-	#print(body)
-	if not body is Player: return
-	if state != HITTED:
-		#print(body)
-		state = ATTACK
+#	print(body)
+#	if not body is Player: return
+#	if state != HITTED:
+#		#print(body)
+#		state = ATTACK
+	pass
 
 func _on_attack_speed_timeout():
 	attack_range.monitoring = true
@@ -208,3 +216,15 @@ func _on_idle_timer_timeout():
 	state = IDLE
 	direction_change_timer = randf_range(MIN_DIRECTION_CHANGE_DELAY, MAX_DIRECTION_CHANGE_DELAY)
 	chase_state_just_entered = true
+
+
+func _on_attack_range_area_entered(area):
+	#print(area)
+	if not area.get_parent() is Player: return
+	if state != HITTED:
+		#print(body)
+		state = ATTACK
+
+func _on_death_anim_finished():
+	
+	pass

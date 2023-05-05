@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://dg52dgv11sx3b"]
+
+[ext_resource type="Script" path="res://World/heal.gd" id="1_7lfu1"]
+[ext_resource type="PackedScene" uid="uid://2qn3njrbgvwr" path="res://World/shadow_drawer.tscn" id="2_001la"]
+[ext_resource type="Texture2D" uid="uid://b8a4rmubyj4wf" path="res://Assets/heal..png" id="3_tukvo"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ahhkd"]
+radius = 6.99991
+height = 18.0001
+
+[node name="Heal" type="Area2D"]
+scale = Vector2(-1, 1)
+collision_layer = 0
+collision_mask = 32768
+script = ExtResource("1_7lfu1")
+shadow_drawer = ExtResource("2_001la")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.000113934, 0.00017929)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_ahhkd")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("3_tukvo")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

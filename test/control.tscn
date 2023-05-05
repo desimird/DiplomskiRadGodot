@@ -45,8 +45,7 @@ offset_bottom = -8.0
 grow_horizontal = 2
 grow_vertical = 0
 theme = SubResource("Theme_u1o5u")
-max_value = 75.0
-step = 2.5
+max_value = 15.0
 nine_patch_stretch = true
 texture_progress = SubResource("ViewportTexture_1k4yb")
 

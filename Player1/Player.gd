@@ -33,7 +33,8 @@ enum{
 	MOVE,
 	ROLL,
 	ATTACK,
-	IDLE
+	IDLE,
+	HITTED
 }
 var state = MOVE
 
@@ -43,6 +44,7 @@ func _ready():
 	player_hurtbox.connect("hitted", Callable(self, "_on_hitted"))
 	PlayerStats.connect("no_health", Callable(self, "_on_no_health"))
 	sword_hitbox.connect("did_hit", Callable(self, "_on_did_hit"))
+	Event.connect("reset_combo", Callable(self, "_on_reset_combo"))
 	#player_stats.connect("no_health", self, "change_screen")
 
 func _physics_process(delta):
@@ -60,6 +62,8 @@ func _physics_process(delta):
 				move_state(delta)
 			ATTACK:
 				attack_state(delta)
+			HITTED:
+				hitted_state()
 
 
 
@@ -94,6 +98,7 @@ func move_state(delta):
 	move_and_slide()
 	velocity = velocity
 	
+
 	
 		#var pos = global_position
 		#Event.emit_signal("shots_fired", projectile, pos,animation_tree.get("parameters/attack/blend_position"))
@@ -104,13 +109,17 @@ func move_state(delta):
 		
 
 func _on_did_hit():
+	SoundPlayer.play_sound(SoundPlayer.HIT)
 	combo_count += 1
 	sword_hitbox.combo_count = combo_count
+	
 	if combo_count > 3:
+		#print("uu")
 		combo_count = 0
 		sword_hitbox.combo_count = combo_count
 
 func attack_state(delta):
+	#print("attack_state")
 	animation_state.travel("attack")
 	animated_sprite_2d.set("frame",combo_count-1)
 
@@ -119,8 +128,13 @@ func attack_anim_finished():
 
 func _on_hitted():
 	#print("USO")
-	#SoundPlayer.play_sound(SoundPlayer.PLAYER_DMG)
+	SoundPlayer.play_sound(SoundPlayer.PLAYER_HURT)
 	PlayerStats.set_health(PlayerStats.health - 1)
+	state = HITTED
+	
+	
+func hitted_state():
+	animation_player.play("hitted")
 	
 
 func recicle():
@@ -134,6 +148,9 @@ func recicle():
 		
 func _on_no_health():
 #	emit_signal("popup_gms",gameover_popup, Vector2(52,64))
+	
+	#animation_player.play("falling")
+	SoundPlayer.play_sound(SoundPlayer.LOSE)
 	queue_free()
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -150,3 +167,10 @@ func _on_timer_timeout():
 	sword_hitbox.combo_count = combo_count
 	state = MOVE
 
+func _on_reset_combo():
+	#print("reset")
+	combo_count = 0
+	sword_hitbox.combo_count = combo_count
+
+func _on_hitted_animation_finished():
+	state = MOVE

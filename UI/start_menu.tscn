@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://UI/start_menu.gd" id="1_xfod2"]
 [ext_resource type="Shader" path="res://UI/game_over.gdshader" id="2_gmhik"]
 [ext_resource type="Shader" path="res://UI/game_over_spr.gdshader" id="3_ix3fp"]
-[ext_resource type="Texture2D" uid="uid://c4otiaq3vg3mg" path="res://Assets/game_over.png" id="4_vf3ue"]
+[ext_resource type="Texture2D" uid="uid://cufvsu10xry07" path="res://Assets/title.png" id="4_64034"]
 [ext_resource type="FontFile" uid="uid://70o32d2posp" path="res://Assets/fonts/slkscreb.ttf" id="5_r10jc"]
 [ext_resource type="Texture2D" uid="uid://d0diya5umqeq1" path="res://Assets/A-button.png" id="6_5dg3u"]
 
@@ -181,6 +181,20 @@ tracks/6/keys = {
 "update": 1,
 "values": [false, true]
 }
+tracks/7/type = "method"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.9),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"play_sound"
+}]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xq8wh"]
 _data = {
@@ -318,8 +332,8 @@ color = Color(0, 0, 0, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_8xx86")
-position = Vector2(120, 70)
-texture = ExtResource("4_vf3ue")
+position = Vector2(120, 88)
+texture = ExtResource("4_64034")
 
 [node name="Button" type="Button" parent="."]
 visible = false
