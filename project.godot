@@ -54,6 +54,17 @@ cam_test_down={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="World"
+2d_physics/layer_7="EnemyRange?"
+2d_physics/layer_10="PlayerHitbox"
+2d_physics/layer_11="PlayerHutrbox"
+2d_physics/layer_12="EnemyHitbox"
+2d_physics/layer_13="EnemyHurtbox"
+2d_physics/layer_15="Enemies"
+2d_physics/layer_16="Player"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

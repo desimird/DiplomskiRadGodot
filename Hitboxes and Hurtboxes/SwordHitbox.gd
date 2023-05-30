@@ -19,8 +19,9 @@ func _ready():
 
 func _on_SwordHitbox_area_entered(area):
 	if area.get_parent() is WalkingEnemy:
+		owner.did_hit = true
 		emit_signal("did_hit")
-		if combo_count == 3:
+		if Global.hard_hit:
 			area.knock = knockback_vector * 1.3
 			area.emit_signal("hitted_hard")
 		else:

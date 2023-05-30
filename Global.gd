@@ -11,3 +11,5 @@ var glasses_collected = 0
 
 var camera_limit_left = 0.0
 var camera_limit_right = 0.0
+
+var hard_hit = false

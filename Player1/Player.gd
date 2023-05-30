@@ -12,7 +12,13 @@ var input_vector = Vector2.ZERO
 
 var combo_count = 0
 
+var attack_state_finished = true
 
+var can_input = true
+var did_hit = false
+var hitted = false
+var died = false
+var falling = false
 
 @onready var animation_player = $AnimationPlayer
 @onready var animation_tree = $AnimationTree
@@ -22,6 +28,7 @@ var combo_count = 0
 @onready var sword_hitbox = $HitboxPivot/SwordHitbox
 @onready var timer = $Timer
 @onready var animated_sprite_2d = $AnimatedSprite2D
+@onready var died_anim = $Died_anim
 
 
 
@@ -29,27 +36,17 @@ var combo_count = 0
 
 signal popup_gms(node,location)
 
-enum{
-	MOVE,
-	ROLL,
-	ATTACK,
-	IDLE,
-	HITTED
-}
-var state = MOVE
 
 
-# Called when the node enters the scene tree for the first time.
 func _ready():
 	player_hurtbox.connect("hitted", Callable(self, "_on_hitted"))
 	PlayerStats.connect("no_health", Callable(self, "_on_no_health"))
 	sword_hitbox.connect("did_hit", Callable(self, "_on_did_hit"))
-	Event.connect("reset_combo", Callable(self, "_on_reset_combo"))
 	#player_stats.connect("no_health", self, "change_screen")
-
+	
 func _physics_process(delta):
-	#print(combo_count)
-#	update()
+	#print(did_hit)
+	get_input_vector()
 	if Global.paused:
 		return 1
 	else:
@@ -57,120 +54,57 @@ func _physics_process(delta):
 			if !is_connected("popup_gms", Callable(Global.world, "popup_gms")):
 				connect("popup_gms", Callable(Global.world, "popup_gms"))
 		Global.player_pos = global_position
-		match state:
-			MOVE:
-				move_state(delta)
-			ATTACK:
-				attack_state(delta)
-			HITTED:
-				hitted_state()
 
-
-
-
-func move_state(delta):
-	
-	if Input.is_action_just_pressed("attack"):
-		if (animation_tree.get("parameters/attack/blend_position").y == 0):
-			timer.start()
-			state = ATTACK
-	
+func get_input_vector():
+	if not can_input:
+		input_vector = Vector2.ZERO
+		return
 	input_vector.x= Input.get_action_strength("ui_right")- Input.get_action_strength("ui_left")
 	input_vector.y= Input.get_action_strength("ui_down")- Input.get_action_strength("ui_up")
 	input_vector= input_vector.normalized()
 	
-	if input_vector != Vector2.ZERO:
-		sword_hitbox.knockback_vector = input_vector
-		#Global.projectile_knockback_vector = input_vector
-		animation_tree.set("parameters/Idle/blend_position", input_vector)
-		animation_tree.set("parameters/Run/blend_position", input_vector)
-		animation_tree.set("parameters/attack/blend_position", input_vector)
-		if combo_count == 0:
-			animation_state.travel("Run")
-		velocity = input_vector * MAX_SPEED
-	else:
-		velocity = Vector2.ZERO
-		if combo_count == 0:
-			animation_state.travel("Idle")
-		
-	set_velocity(velocity)
-	set_up_direction(Vector2.UP)
-	move_and_slide()
-	velocity = velocity
-	
+	if input_vector.x > 0:
+		animated_sprite_2d.flip_h = false
+		died_anim.flip_h = false
+	if input_vector.x < 0:
+		animated_sprite_2d.flip_h = true
+		died_anim.flip_h = true
 
+func ready_for_input():
+	Global.hard_hit = false
+	can_input = true
 	
-		#var pos = global_position
-		#Event.emit_signal("shots_fired", projectile, pos,animation_tree.get("parameters/attack/blend_position"))
-#		if Global.sword_duration > 0:
-#
-#			Global.sword_duration -= 1
-			#(Global.sword_duration)
-		
-
 func _on_did_hit():
 	SoundPlayer.play_sound(SoundPlayer.HIT)
-	combo_count += 1
-	sword_hitbox.combo_count = combo_count
-	
-	if combo_count > 3:
-		#print("uu")
-		combo_count = 0
-		sword_hitbox.combo_count = combo_count
-
-func attack_state(delta):
-	#print("attack_state")
-	animation_state.travel("attack")
-	animated_sprite_2d.set("frame",combo_count-1)
 
 func attack_anim_finished():
-	state = MOVE
-
+	attack_state_finished = true
+	
 func _on_hitted():
-	#print("USO")
 	SoundPlayer.play_sound(SoundPlayer.PLAYER_HURT)
 	PlayerStats.set_health(PlayerStats.health - 1)
-	state = HITTED
-	
-	
-func hitted_state():
-	animation_player.play("hitted")
-	
+	hitted = true
 
-func recicle():
-	#Event.emit_signal("recycle")
-#	while(Global.tin_collected >= 1):
-#		SoundPlayer.play_sound(SoundPlayer.SWORD_GET)
-#		Global.sword_duration += 2
-#		oneup.play("oneup")
-#		Global.tin_collected -= 1
-	pass
-		
 func _on_no_health():
 #	emit_signal("popup_gms",gameover_popup, Vector2(52,64))
-	
+
 	#animation_player.play("falling")
-	SoundPlayer.play_sound(SoundPlayer.LOSE)
-	queue_free()
-	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
-
-#func _draw():
-#	draw_circle(Vector2(0,0) + position, 10, Color.yellow)
-#	print(global_position)
-
+	#SoundPlayer.play_sound(SoundPlayer.LOSE)
+	falling = true
 
 func _on_timer_timeout():
 	combo_count = 0
 	sword_hitbox.combo_count = combo_count
-	state = MOVE
-
-func _on_reset_combo():
-	#print("reset")
-	combo_count = 0
-	sword_hitbox.combo_count = combo_count
+	#state = MOVE
 
 func _on_hitted_animation_finished():
-	state = MOVE
+	hitted = false
+
+func done_falling():
+	falling = false
+
+func end_game():
+	queue_free()
+
+func _set_hard_hit():
+	Global.hard_hit = true
