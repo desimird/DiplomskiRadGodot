@@ -1519,6 +1519,7 @@ z_index = 12
 position = Vector2(0, -4)
 collision_layer = 32768
 collision_mask = 81921
+platform_floor_layers = 4278190081
 script = ExtResource("2")
 
 [node name="AnimationTree" type="AnimationTree" parent="."]

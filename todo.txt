@@ -1,3 +1,4 @@
 
 maybe look at enemies that fall sometimes without reason
 enemy with bat is broken
+fix enemies getting stuck to player when overlapped
