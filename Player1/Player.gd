@@ -8,6 +8,7 @@ class_name Player
 
 var paused = false
 
+var test = true
 var input_vector = Vector2.ZERO
 
 var combo_count = 0
