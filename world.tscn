@@ -233,6 +233,8 @@ enemy3 = ExtResource("4_ysp7i")
 [node name="Camera2D" parent="." instance=ExtResource("10_8r7pf")]
 z_index = 50
 position = Vector2(52, 153)
+limit_left = 0
+limit_right = 276447232
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Camera2D"]
 
@@ -313,34 +315,43 @@ one_shot = true
 
 [node name="Triger" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(240, 0)
+collision_layer = 524288
+collision_mask = 557056
 
 [node name="Triger3" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(600, 0)
+collision_layer = 524288
 
 [node name="Triger4" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(600, 0)
+collision_layer = 524288
 number_of_enemies = 1
 type_of_enemies = 2
 
 [node name="Triger2" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(1200, -1)
+collision_layer = 524288
 type_of_enemies = 2
 
 [node name="Triger5" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(1200, -1)
+collision_layer = 524288
 type_of_enemies = 3
 
 [node name="Triger6" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(1800, -1)
+collision_layer = 524288
 number_of_enemies = 3
 
 [node name="Triger7" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(1800, -1)
+collision_layer = 524288
 number_of_enemies = 3
 type_of_enemies = 2
 
 [node name="Triger8" parent="Trigers" instance=ExtResource("11_jgl0n")]
 position = Vector2(1800, -1)
+collision_layer = 524288
 number_of_enemies = 3
 type_of_enemies = 3
 
