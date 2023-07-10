@@ -64,6 +64,7 @@ cam_test_down={
 2d_physics/layer_13="EnemyHurtbox"
 2d_physics/layer_15="Enemies"
 2d_physics/layer_16="Player"
+2d_physics/layer_20="CameraCheck"
 
 [rendering]
 
