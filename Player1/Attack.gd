@@ -11,6 +11,7 @@ extends PlayerState
 var action_pressed = false
 
 func enter(_msg := {}) -> void:
+	player.hitted = false
 	player.get_input_vector()
 	if player.animated_sprite_2d.flip_h:
 		animation_player.play(animation_left)
