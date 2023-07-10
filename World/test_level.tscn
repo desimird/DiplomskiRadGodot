@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://oq1rl06jkyn6"]
+[gd_scene load_steps=6 format=3 uid="uid://oq1rl06jkyn6"]
 
 [ext_resource type="PackedScene" uid="uid://bhuo2n608ceo8" path="res://Player1/Player.tscn" id="1_gguiq"]
+[ext_resource type="PackedScene" uid="uid://d1a01unr2p762" path="res://Enemies/enemy3.tscn" id="2_s8kr2"]
 [ext_resource type="PackedScene" uid="uid://damy4t7j0lsw3" path="res://Enemies/enemy.tscn" id="2_ybbey"]
+[ext_resource type="PackedScene" uid="uid://c3umt5mih58ai" path="res://Enemies/enemy2.tscn" id="3_00s5w"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c77fr"]
 size = Vector2(458, 20)
@@ -18,33 +20,11 @@ position = Vector2(-45, 237)
 position = Vector2(219, 0)
 shape = SubResource("RectangleShape2D_c77fr")
 
-[node name="Enemy" parent="." instance=ExtResource("2_ybbey")]
-position = Vector2(75, 161)
+[node name="Enemy3" parent="." instance=ExtResource("2_s8kr2")]
+position = Vector2(221, 55)
 
-[node name="Stats" parent="Enemy" index="9"]
-max_health = 1000
-
-[node name="Enemy3" parent="." instance=ExtResource("2_ybbey")]
-position = Vector2(75, 161)
-
-[node name="Stats" parent="Enemy3" index="9"]
-max_health = 1000
+[node name="Enemy" parent="." instance=ExtResource("3_00s5w")]
+position = Vector2(-84, 42)
 
 [node name="Enemy2" parent="." instance=ExtResource("2_ybbey")]
-position = Vector2(75, 161)
-
-[node name="Stats" parent="Enemy2" index="9"]
-max_health = 1000
-
-[editable path="Enemy"]
-[editable path="Enemy/EnemyHurtbox"]
-[editable path="Enemy/HitboxPivot/EnemyHitbox"]
-[editable path="Enemy/SoftCollision"]
-[editable path="Enemy3"]
-[editable path="Enemy3/EnemyHurtbox"]
-[editable path="Enemy3/HitboxPivot/EnemyHitbox"]
-[editable path="Enemy3/SoftCollision"]
-[editable path="Enemy2"]
-[editable path="Enemy2/EnemyHurtbox"]
-[editable path="Enemy2/HitboxPivot/EnemyHitbox"]
-[editable path="Enemy2/SoftCollision"]
+position = Vector2(33, 79)

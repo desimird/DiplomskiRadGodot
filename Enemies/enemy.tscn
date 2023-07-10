@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://damy4t7j0lsw3"]
+[gd_scene load_steps=47 format=3 uid="uid://damy4t7j0lsw3"]
 
 [ext_resource type="Script" path="res://Enemies/enemy.gd" id="1_olvjn"]
 [ext_resource type="PackedScene" uid="uid://c74nofjliy464" path="res://Hitboxes and Hurtboxes/EnemyHurtbox.tscn" id="1_x4t4e"]
@@ -8,9 +8,14 @@
 [ext_resource type="Texture2D" uid="uid://c70jsojvseex5" path="res://Assets/Enemy1/New folder/hited_1player.png" id="4_q1533"]
 [ext_resource type="Texture2D" uid="uid://cm048jnu17chb" path="res://Assets/Enemy1/New folder/enemy_hit_hard.png" id="5_bwuy7"]
 [ext_resource type="Texture2D" uid="uid://7gsld7x8laea" path="res://Assets/Enemy1/New folder/enemy_run.png" id="6_14845"]
+[ext_resource type="Script" path="res://StateMachine/StateMachine.gd" id="12_x5m6i"]
+[ext_resource type="Script" path="res://Enemies/Idle.gd" id="13_4amn7"]
 [ext_resource type="PackedScene" uid="uid://b16q0ta2dmbxh" path="res://Hitboxes and Hurtboxes/EnemyHitbox.tscn" id="13_kuc3a"]
 [ext_resource type="PackedScene" uid="uid://nwgfjgdp5dav" path="res://Enemies/Stats.tscn" id="14_6233y"]
+[ext_resource type="Script" path="res://Enemies/Chase.gd" id="14_duc1c"]
 [ext_resource type="PackedScene" uid="uid://bdfmn5q4piar4" path="res://Hitboxes and Hurtboxes/SoftCollision.tscn" id="15_d2v8w"]
+[ext_resource type="Script" path="res://Enemies/Attack.gd" id="15_gmjcs"]
+[ext_resource type="Script" path="res://Enemies/Hitted.gd" id="16_755wh"]
 
 [sub_resource type="Animation" id="Animation_cpcvw"]
 length = 0.001
@@ -66,20 +71,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [1, 0, 1]
 }
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.4),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"_on_attack_animation_ended"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_4lvkb"]
 resource_name = "attack_2"
@@ -107,20 +98,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [1, 2, 1]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.4),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"_on_attack_animation_ended"
-}]
 }
 
 [sub_resource type="Animation" id="Animation_2qlkb"]
@@ -192,20 +169,6 @@ tracks/1/keys = {
 "update": 1,
 "values": [0, 1]
 }
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.3),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"_on_hitted_animation_ended"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_ne1g7"]
 resource_name = "hitted_hard"
@@ -235,24 +198,11 @@ tracks/1/keys = {
 "update": 0,
 "values": [0, 1, 2, 3, 4]
 }
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath(".")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(1.5),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"_on_hitted_animation_ended"
-}]
-}
 
 [sub_resource type="Animation" id="Animation_dq2ht"]
 resource_name = "run"
 length = 0.6
+loop_mode = 1
 step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -279,6 +229,34 @@ tracks/1/keys = {
 "values": [0, 1, 2, 3]
 }
 
+[sub_resource type="Animation" id="Animation_v5ppc"]
+resource_name = "idle"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"idle"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_m4en2"]
 _data = {
 "RESET": SubResource("Animation_cpcvw"),
@@ -287,6 +265,7 @@ _data = {
 "death_anim": SubResource("Animation_2qlkb"),
 "hitted": SubResource("Animation_xnsfn"),
 "hitted_hard": SubResource("Animation_ne1g7"),
+"idle": SubResource("Animation_v5ppc"),
 "run": SubResource("Animation_dq2ht")
 }
 
@@ -501,7 +480,6 @@ shape = SubResource("CircleShape2D_a7564")
 debug_color = Color(0.266667, 0.631373, 0, 0.419608)
 
 [node name="AttackSpeed" type="Timer" parent="."]
-wait_time = 0.5
 
 [node name="IdleTimer" type="Timer" parent="."]
 wait_time = 6.0
@@ -514,8 +492,27 @@ one_shot = true
 [node name="CollisionShape2D" parent="SoftCollision" index="0"]
 shape = SubResource("CapsuleShape2D_jpqyk")
 
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("12_x5m6i")
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("13_4amn7")
+_animation_player = NodePath("../../AnimationPlayer")
+
+[node name="Chase" type="Node" parent="StateMachine"]
+script = ExtResource("14_duc1c")
+_animation_player = NodePath("../../AnimationPlayer")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("15_gmjcs")
+_animation_player = NodePath("../../AnimationPlayer")
+
+[node name="Hitted" type="Node" parent="StateMachine"]
+script = ExtResource("16_755wh")
+_animation_player = NodePath("../../AnimationPlayer")
+
 [connection signal="area_entered" from="AttackRange" to="." method="_on_attack_range_area_entered"]
-[connection signal="body_entered" from="AttackRange" to="." method="_on_attack_range_body_entered"]
 [connection signal="timeout" from="AttackSpeed" to="." method="_on_attack_speed_timeout"]
 [connection signal="timeout" from="IdleTimer" to="." method="_on_idle_timer_timeout"]
 
