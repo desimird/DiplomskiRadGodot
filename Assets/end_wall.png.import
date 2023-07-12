@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bp0qwdt2fru15"
-path="res://.godot/imported/plater_walk_left.png-1ad57bc6b090b7c8f1d540a8cbe35981.ctex"
+uid="uid://ioeu75i1rnvb"
+path="res://.godot/imported/end_wall.png-29c7b247bbfb538c0feba05faae07796.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/plater_walk_left.png"
-dest_files=["res://.godot/imported/plater_walk_left.png-1ad57bc6b090b7c8f1d540a8cbe35981.ctex"]
+source_file="res://Assets/end_wall.png"
+dest_files=["res://.godot/imported/end_wall.png-29c7b247bbfb538c0feba05faae07796.ctex"]
 
 [params]
 

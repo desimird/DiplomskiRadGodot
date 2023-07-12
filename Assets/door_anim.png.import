@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxlmmqghiysk0"
-path="res://.godot/imported/NES - Double Dragon - Abobo.png-94b5c37c0f7137ec8158c1ca890bc965.ctex"
+uid="uid://dvg2bsv6k4mc2"
+path="res://.godot/imported/door_anim.png-e05b8b8a88d927f0535d57bbbaa5a115.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/NES - Double Dragon - Abobo.png"
-dest_files=["res://.godot/imported/NES - Double Dragon - Abobo.png-94b5c37c0f7137ec8158c1ca890bc965.ctex"]
+source_file="res://Assets/door_anim.png"
+dest_files=["res://.godot/imported/door_anim.png-e05b8b8a88d927f0535d57bbbaa5a115.ctex"]
 
 [params]
 
