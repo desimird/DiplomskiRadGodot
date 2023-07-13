@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://c0c7iw8nk8dhe"]
+
+[ext_resource type="PackedScene" uid="uid://c6l5xn0jegyo3" path="res://World/door.tscn" id="1_cghhh"]
+[ext_resource type="PackedScene" uid="uid://bhuo2n608ceo8" path="res://Player1/Player.tscn" id="2_drlv7"]
+
+[node name="DoorTest" type="Node2D"]
+
+[node name="Door" parent="." instance=ExtResource("1_cghhh")]
+position = Vector2(124, 87)
+scene_to = ""
+
+[node name="Player" parent="." instance=ExtResource("2_drlv7")]
+position = Vector2(36, 70)

@@ -34,8 +34,9 @@ func _process(delta):
 	
 	if enemies.get_child_count() == 0 and enemies_spawned:
 		if triger_counter == 8:
-			win.visible = true
-			win.play_anim()
+			#win.visible = true
+			#win.play_anim()
+			Event.emit_signal("open_door")
 		go_popup_timer.start()
 		go_popup.visible = true
 		enemies_spawned = false

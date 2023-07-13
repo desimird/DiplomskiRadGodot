@@ -22,8 +22,6 @@ var died = false
 var falling = false
 
 @onready var animation_player = $AnimationPlayer
-@onready var animation_tree = $AnimationTree
-@onready var animation_state = animation_tree.get("parameters/playback")
 #@onready var player_stats = $PlayerStats
 @onready var player_hurtbox = $PlayerHurtbox
 @onready var sword_hitbox = $HitboxPivot/SwordHitbox
