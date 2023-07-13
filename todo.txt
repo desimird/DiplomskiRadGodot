@@ -3,4 +3,7 @@ maybe look at enemies that fall sometimes without reason
 add trowing objects
 boss that shoots projectiles 
 
+
+attack speed faster
+
 add more parallax layers
