@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bcxdq3firxiac"]
+
+[ext_resource type="Script" path="res://test/trowable_object.gd" id="1_sc17a"]
+[ext_resource type="Texture2D" uid="uid://xywhp8u72pgb" path="res://Assets/Enemy1/head_big.png" id="2_iebji"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_q7fr4"]
+size = Vector2(25, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ane4c"]
+size = Vector2(29, 28)
+
+[node name="TrowableObject" type="CharacterBody2D"]
+collision_layer = 8388608
+collision_mask = 49152
+script = ExtResource("1_sc17a")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_q7fr4")
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 32768
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_ane4c")
+
+[node name="HeadBig" type="Sprite2D" parent="."]
+texture = ExtResource("2_iebji")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]

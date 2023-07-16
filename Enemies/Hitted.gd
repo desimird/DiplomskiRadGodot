@@ -12,6 +12,7 @@ func enter(_msg := {}) -> void:
 	if enemy.hitted_hard:
 		animation_player.play("hitted_hard")
 	else:
+		print("uso")
 		animation_player.play("hitted")
 		
 func physics_update(delta: float) -> void:

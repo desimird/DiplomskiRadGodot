@@ -1,9 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://oq1rl06jkyn6"]
+[gd_scene load_steps=4 format=3 uid="uid://oq1rl06jkyn6"]
 
 [ext_resource type="PackedScene" uid="uid://bhuo2n608ceo8" path="res://Player1/Player.tscn" id="1_gguiq"]
-[ext_resource type="PackedScene" uid="uid://d1a01unr2p762" path="res://Enemies/enemy3.tscn" id="2_s8kr2"]
-[ext_resource type="PackedScene" uid="uid://damy4t7j0lsw3" path="res://Enemies/enemy.tscn" id="2_ybbey"]
-[ext_resource type="PackedScene" uid="uid://c3umt5mih58ai" path="res://Enemies/enemy2.tscn" id="3_00s5w"]
+[ext_resource type="PackedScene" uid="uid://bcxdq3firxiac" path="res://test/trowable_object.tscn" id="2_0hlx2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c77fr"]
 size = Vector2(458, 20)
@@ -20,11 +18,6 @@ position = Vector2(-45, 237)
 position = Vector2(219, 0)
 shape = SubResource("RectangleShape2D_c77fr")
 
-[node name="Enemy3" parent="." instance=ExtResource("2_s8kr2")]
-position = Vector2(221, 55)
-
-[node name="Enemy" parent="." instance=ExtResource("3_00s5w")]
-position = Vector2(-84, 42)
-
-[node name="Enemy2" parent="." instance=ExtResource("2_ybbey")]
-position = Vector2(33, 79)
+[node name="TrowableObject" parent="." instance=ExtResource("2_0hlx2")]
+position = Vector2(158, 87)
+platform_floor_layers = 4278190080

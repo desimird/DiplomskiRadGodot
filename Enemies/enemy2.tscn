@@ -143,7 +143,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_xnsfn"]
 resource_name = "hitted"
-length = 0.3
+length = 0.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -417,11 +417,11 @@ radius = 5.09902
 radius = 11.0
 height = 40.0
 
-[node name="Enemy" type="CharacterBody2D"]
+[node name="Enemy2" type="CharacterBody2D"]
 texture_filter = 1
 collision_layer = 16384
 collision_mask = 32769
-platform_floor_layers = 4278190081
+platform_floor_layers = 4278190080
 safe_margin = 0.15
 script = ExtResource("1_dwfsg")
 glasses = ExtResource("2_fc0e7")
